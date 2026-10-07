@@ -196,7 +196,6 @@ def test_cli_success_and_errors(tmp_path, capsys):
 
 
 def test_cli_process_exit_code(tmp_path):
-    pair(tmp_path, "0 4 C:maj\n5 10 G:maj", "0 10 C:maj") if False else None
     invalid = tmp_path / "gap.lab"
     invalid.write_text("0 4 C:maj\n5 10 G:maj")
     prediction = tmp_path / "pred.lab"
