@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools==80.9.0", "wheel==0.45.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chord-evaluation-toolkit"
+version = "1.0.0"
+description = "Validated duration-weighted evaluation of musical chord interval annotations"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = "MIT"
+authors = [{name = "Abzal Nurym"}]
+dependencies = ["mir_eval==0.8.2", "numpy==2.2.6", "scipy==1.15.3", "decorator==5.3.1"]
+
+[project.scripts]
+chord-eval = "chord_eval.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
