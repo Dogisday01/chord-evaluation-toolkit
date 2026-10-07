@@ -103,6 +103,33 @@ def main():
         )
         if json.loads(adapter.stdout) != {"root": 1.0, "major_minor": 0.0}:
             raise RuntimeError("installed public adapter violates the known-answer case")
+        shutil.copytree(root / "examples" / "real_mirex", working / "real_mirex")
+        run(
+            [
+                str(cli),
+                "compare",
+                "real_mirex/manifest.json",
+                "--baseline",
+                "FK2",
+                "--candidate",
+                "JLCX1",
+                "--output",
+                "real.json",
+                "--html",
+                "real.html",
+            ],
+            working,
+            env,
+        )
+        real = json.loads((working / "real.json").read_text())
+        expected = {"FK2": 0.9468402950967814, "JLCX1": 0.944928179956164}
+        if real["status"] != "complete" or any(
+            abs(real["summary"][model]["micro"]["major_minor"] - value) > 1e-12
+            for model, value in expected.items()
+        ):
+            raise RuntimeError("installed wheel real-data example disagrees with verified oracle")
+        if "analysis" not in real["records"][0]["evaluations"]["FK2"]:
+            raise RuntimeError("installed wheel has no detailed analysis")
         evidence = {
             "wheel": wheel.name,
             "sha256": hashlib.sha256(wheel.read_bytes()).hexdigest(),
@@ -116,6 +143,9 @@ def main():
             "collection_macro": {"baseline": a["macro"], "candidate": b["macro"]},
             "html_resource": "exported from installed wheel",
             "public_interval_api": "passed",
+            "real_data_micro": {m: s["micro"] for m, s in real["summary"].items()},
+            "real_data_track_count": len(real["records"]),
+            "detailed_analysis": "passed",
         }
     destination = Path(args.evidence)
     destination.parent.mkdir(parents=True, exist_ok=True)

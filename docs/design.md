@@ -49,3 +49,12 @@ The scientific dependency is mir_eval 0.8.2. Its root and major/minor rules are 
 The v1.0 tests remain the regression baseline. Version 1.1 adds diagnostics,
 collection orchestration, an offline report template and an API adapter module.
 The [protocol](protocol.md) documents each new calculation and provenance boundary.
+
+## Continuity audit for version 1.2
+
+Detailed analysis remains inside Evaluation and Reporting/Export. It adds no
+recognition model, hosted service or training claim. Strict scoring behavior and
+the 84 existing tests remain intact. Explicit data preparation precedes scoring
+and retains original bytes, vocabulary projection and removed coverage in an
+audit. Real third-party outputs demonstrate the module's external-data use;
+their scores are not a baseline/Transformer experiment conducted by this project.

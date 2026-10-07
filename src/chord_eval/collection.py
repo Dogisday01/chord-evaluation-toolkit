@@ -4,8 +4,10 @@ import hashlib
 import json
 import math
 import re
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from statistics import median
 
 from . import __version__
 from .evaluation import score_annotations
@@ -61,7 +63,7 @@ def load_manifest(path: str | Path) -> tuple[dict, str]:
     keys(
         data,
         ("schema_version", "dataset_id", "split", "protocol_id", "models", "tracks"),
-        (),
+        ("data_provenance",),
         "manifest",
     )
     if data["schema_version"] != "1.0" or data["protocol_id"] != PROTOCOL_ID:
@@ -69,6 +71,16 @@ def load_manifest(path: str | Path) -> tuple[dict, str]:
     identifier(data["dataset_id"], "dataset_id")
     if data["split"] not in ("train", "validation", "test"):
         raise AnnotationError("manifest: split must be train, validation or test")
+    if "data_provenance" in data:
+        provenance = data["data_provenance"]
+        keys(
+            provenance,
+            (),
+            ("source", "source_revision", "preparation", "audit_file", "selection"),
+            "data_provenance",
+        )
+        if any(not isinstance(value, str) for value in provenance.values()):
+            raise AnnotationError("data_provenance: all values must be strings")
     models = data["models"]
     if not isinstance(models, dict) or not models:
         raise AnnotationError("manifest: declare at least one model")
@@ -113,6 +125,23 @@ def load_manifest(path: str | Path) -> tuple[dict, str]:
 
 def aggregate(reports: list[dict]) -> dict:
     duration = math.fsum(r["duration_seconds"] for r in reports)
+    patterns = defaultdict(list)
+    for report in reports:
+        for item in report["analysis"]["confusion_patterns"]:
+            patterns[item["reference"], item["prediction"]].append(item)
+    pooled = sorted(
+        [
+            dict(
+                reference=ref,
+                prediction=pred,
+                seconds=math.fsum(i["seconds"] for i in items),
+                occurrences=sum(i["occurrences"] for i in items),
+                recording_count=len(items),
+            )
+            for (ref, pred), items in patterns.items()
+        ],
+        key=lambda item: (-item["seconds"], item["reference"], item["prediction"]),
+    )
     return {
         "track_count": len(reports),
         "duration_seconds": duration,
@@ -120,6 +149,21 @@ def aggregate(reports: list[dict]) -> dict:
         "micro": {
             m: math.fsum(r["metrics"][m] * r["duration_seconds"] for r in reports) / duration
             for m in METRICS
+        },
+        "analysis": {
+            "error_seconds": {
+                name: math.fsum(r["diagnostics"]["error_seconds"][name] for r in reports)
+                for name in ("wrong_root", "wrong_quality", "missed_chord", "false_chord")
+            },
+            "metrics_distribution": {
+                metric: dict(
+                    minimum=min(r["metrics"][metric] for r in reports),
+                    maximum=max(r["metrics"][metric] for r in reports),
+                    median=median(r["metrics"][metric] for r in reports),
+                )
+                for metric in METRICS
+            },
+            "confusion_patterns": pooled,
         },
     }
 
@@ -215,7 +259,7 @@ def run_experiment(manifest_path, *, baseline=None, candidate=None, code_revisio
         else None
     )
     return {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "kind": "collection",
         "status": "complete" if complete else "incomplete",
         "tool": dict(
@@ -227,6 +271,7 @@ def run_experiment(manifest_path, *, baseline=None, candidate=None, code_revisio
             name=Path(manifest_path).name, sha256=digest, schema_version=manifest["schema_version"]
         ),
         "dataset": dict(id=manifest["dataset_id"], split=manifest["split"]),
+        "data_provenance": manifest.get("data_provenance"),
         "models": manifest["models"],
         "records": records,
         "summary": summaries,

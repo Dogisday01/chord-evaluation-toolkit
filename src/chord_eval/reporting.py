@@ -9,6 +9,7 @@ from importlib.metadata import version
 from pathlib import Path
 
 from . import __version__
+from .analysis import analyze
 from .diagnostics import diagnose
 from .protocol import protocol_record
 
@@ -31,8 +32,9 @@ def build_report(result: dict, code_revision: str | None = None) -> dict:
             "interval_count": len(item.segments),
             "boundary_adjustments": list(item.adjustments),
         }
+    diagnostics = diagnose(result)
     return {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "kind": "pair",
         "tool": {
             "name": "chord-evaluation-toolkit",
@@ -45,7 +47,8 @@ def build_report(result: dict, code_revision: str | None = None) -> dict:
         "duration_seconds": result["duration_seconds"],
         "metrics": result["metrics"],
         "aligned_segments": result["aligned_segments"],
-        "diagnostics": diagnose(result),
+        "diagnostics": diagnostics,
+        "analysis": analyze(result, diagnostics),
         "run": {"created_at_utc": datetime.now(timezone.utc).isoformat()},
     }
 

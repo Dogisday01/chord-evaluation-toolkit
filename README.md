@@ -1,8 +1,8 @@
 # Chord Evaluation Toolkit
 
-Evaluate chord predictions, inspect disagreements and compare experiments across recordings. Version 1.1 continues the Evaluation and Reporting/Export components of the chord recognition project assessed in Assignment 2, with a shared protocol and a public adapter interface.
+Evaluate chord predictions, inspect disagreements and compare experiments across recordings. Version 1.2 continues the Evaluation and Reporting/Export components of the chord recognition project assessed in Assignment 2, with detailed descriptive analysis, a shared protocol and a public adapter interface.
 
-It evaluates supplied annotations. It does not train a model, decode audio, or demonstrate recognition accuracy on a music dataset.
+It evaluates supplied annotations. A real-data example evaluates published third-party predictions against supplied references. The package does not train a model or decode audio.
 
 ## Install and run
 
@@ -30,6 +30,45 @@ To identify the code used, pass `--code-revision COMMIT_OR_TAG`. Record `git rev
 Select reference/prediction files or a collection manifest → evaluate or compare → open the HTML report → select a recording/model/error interval → inspect and save results. The browser report works as a local file and needs no server, account or internet. Training and repository management remain development activities.
 
 The report identifies wrong roots, wrong major/minor quality, missed chords and false chords. It lists error intervals, the longest disagreements, time spent on chord confusions and recall by reference chord. Segmentation scores describe excess/missing changes, with repeated equivalent labels merged first. Higher is better; correct segmentation does not imply correct chord names.
+
+Detailed analysis adds contiguous error episodes, repeated confusion patterns,
+root-substitution offsets, ten time windows, precision/recall/F1 by chord,
+agreement on chord-only versus N passages, and error rates near reference changes.
+The HTML provides a clickable time map, error filters and duration sorting.
+Summary statements are derived directly from measured values; they do not infer
+model causes or statistical significance. [Definitions](docs/analysis.md) explain
+every denominator, unavailable value and interpretation boundary.
+
+## Real published annotations
+
+```text
+chord-eval compare examples/real_mirex/manifest.json --baseline FK2 --candidate JLCX1 --output real.json --html real.html
+```
+
+This bundled demonstration uses MIREX 2018 Billboard2012 reference files and
+published FK2/JLCX1 predictions for IDs 1006, 1007 and 1011: 635.095646 seconds.
+Micro major/minor agreement is 94.6840% for FK2 and 94.4928% for JLCX1 under
+our declared preparation and protocol. These are results for three selected
+prepared excerpts, not official MIREX results or results of our own trained model.
+JLCX1 improves on two recordings and worsens on one; the weighted total falls.
+
+Selection uses the first three compatible filenames before any scoring. Three
+earlier incompatible records are listed with reasons. Harte labels are projected
+to a unique major/minor triad, ignoring additional tones and bass. Unknown or
+nontriadic labels are rejected. Each pair covers the common shortest endpoint;
+the largest removed tail is 0.048980 seconds. Nothing is padded or shifted.
+Original files, source revision/URLs, projections, tail lengths, rounding records
+and hashes are in [the data audit](examples/real_mirex/preparation_audit.json).
+See [data provenance and limitations](examples/real_mirex/README.md).
+
+To reproduce the download in a new directory, with network access:
+
+```text
+python scripts/prepare_mirex_demo.py --destination examples/real_mirex_recreated
+```
+
+Scoring the bundled files works offline. The strict evaluator itself still rejects
+extensions and unequal coverage; preparation is an explicit preceding operation.
 
 ## Collections and model comparison
 
@@ -75,7 +114,7 @@ The merged grid uses boundaries from both files. Root and major/minor correctnes
 
 ## Report and errors
 
-JSON schema 1.1 includes the report kind, tool version, optional code revision, SHA-256 digests, dependency/Python versions, protocol ID, metrics, diagnostics, aligned segments, normalization records and UTC creation time. File hashes describe the exact bytes parsed; in-memory hashes identify their documented canonical JSON representation. Collection reports retain the manifest hash and each pair's provenance. Filenames, rather than absolute paths, keep output portable. Run timestamps naturally differ between repeated executions.
+JSON schema 1.2 includes the report kind, tool version, optional code revision, SHA-256 digests, dependency/Python versions, protocol ID, metrics, diagnostics, descriptive analysis, aligned segments, normalization records and UTC creation time. File hashes describe the exact bytes parsed; in-memory hashes identify their documented canonical JSON representation. Collection reports retain the manifest hash and each pair's provenance. Filenames, rather than absolute paths, keep output portable. Run timestamps naturally differ between repeated executions.
 
 Exit codes: 0 success; 2 invalid annotation/manifest, incomplete collection or command usage; 3 direct file reading/writing error. Output publication uses complete staging files and create-if-absent hard links. NTFS and standard Linux filesystems are supported; unsupported filesystems fail explicitly. Parent directories must exist. An ordinary publication failure cleans newly created outputs while preserving existing files. Publication is atomic per file; a process interruption may leave a subset of complete JSON/HTML outputs.
 

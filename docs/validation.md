@@ -14,11 +14,11 @@ Additional tests cover no-chord N, enharmonic roots, blank/BOM text, snapshot ha
 
 A separate deterministic oracle generates 30 pairs with integer-second boundaries. It expands each interval to per-second labels and counts matching roots and qualities. It does not call the package's temporal alignment or mir_eval comparisons to calculate expected results. Splitting equal-label intervals and positive time scaling are checked separately.
 
-On the local Windows Python 3.12.14 environment, the suite contains 84 passing pytest cases (46 legacy and 38 extension cases). The random-grid oracle is one of those cases and includes 30 comparisons. Local lint and format checks pass. Distribution verification installs the actual wheel into a new environment outside the checkout, checks dependency consistency, confirms that the imported package is inside that environment, executes the README example and rejects the invalid-gap fixture without creating a report.
+On the local Windows Python 3.12.14 environment, the suite contains 107 passing pytest cases (46 legacy, 38 version 1.1 extension and 23 version 1.2 analysis/data cases). The original random-grid oracle includes 30 comparisons; a separate analysis oracle checks 30 additional pairs. Local lint and format checks pass. Distribution verification installs the actual wheel into a new environment outside the checkout, checks dependency consistency, confirms that the imported package is inside that environment, executes the README example and rejects the invalid-gap fixture without creating a report.
 
 Evidence files are generated under reports/: test-results.xml, distribution-check.json and example-report.json. They are excluded from Git because each run has its own timestamp and provenance. Source tests and verification commands are versioned. The configured GitHub matrix covers Linux Python 3.11/3.12/3.13 and Windows Python 3.12; local Windows evidence does not establish the outcome of those hosted jobs.
 
-Limits: tests verify evaluation behavior on synthetic annotation inputs. They do not establish chord recognition accuracy, dataset access, aligned ground truth quality, training reproducibility or GPU performance. Error messages and preserved reports are also part of observable correctness. Rendering and lint cannot independently prove a scientific score correct.
+Limits: synthetic tests verify known answers and real-data tests verify source/prepared hashes and scoring on three prepared benchmark excerpts. They do not establish independently exact ground truth, representative corpus performance, our own model accuracy, training reproducibility or GPU performance. Error messages and preserved reports are also part of observable correctness. Rendering and lint cannot independently prove a scientific score correct.
 
 
 Version 1.1 adds independently specified error categories, enharmonic confusion
@@ -40,3 +40,10 @@ Acceptance criteria and expected values were fixed before coding in
 extension_acceptance.md. Model metadata and split declarations are retained but
 not independently verified. There is no automatic model-winner or significance
 claim. No training or checkpoint reload is demonstrated by these synthetic runs.
+
+Version 1.2 uses [predefined analysis acceptance criteria](analysis_acceptance.md)
+for error episodes, precision/recall/F1, temporal partitions, overlapping boundary
+windows and unavailable denominators. A separate oracle walks real prepared input
+intervals and counts matching label/root seconds without calling toolkit scoring
+or analysis helpers. Imported original/prepared file hashes and selection exclusions
+are checked offline. The installed-wheel verifier also evaluates the real demo.

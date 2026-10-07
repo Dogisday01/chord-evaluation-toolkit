@@ -1,0 +1,508 @@
+{
+  "source_revision": "be7f0e929d3452697f07a227cf1b533426eb2022",
+  "selection_rule": "first three filenames in lexical order with fully projectable labels, strict continuous input and endpoint spread <=0.1 s; no scores used",
+  "preparation_rule": "Harte pitch set must contain exactly one complete major/minor triad; discard additional tones and bass; canonical roots; common [0,min(end)] coverage; no padding, shifts or internal exclusions",
+  "interpretation": "real published annotations and algorithm outputs on selected prepared excerpts; not our trained models, a representative corpus benchmark or official MIREX scores",
+  "scanned": [
+    {
+      "id": "1002",
+      "included": false,
+      "reasons": [
+        "Ground-Truth: Ground-Truth/1002.lab: invalid three-column lab text"
+      ],
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1002.lab",
+          "sha256": "1723fef8b5ce92c088a93519acd84b7850176b6d6ea398ea13799e4095c9daf6"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1002.lab",
+          "sha256": "5b3b8b1a1cd923d13fea75c76cf46f62f99e93c061d6a89c749b4d7c787b2155",
+          "original_end_seconds": 239.8,
+          "label_projection": {
+            "A#:maj": "A#:maj",
+            "C:maj": "C:maj",
+            "F:maj": "F:maj",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": []
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1002.lab",
+          "sha256": "2b3b83fef6ccfde97ca4ffbfd4560f43054fb6eaf0e0f4900a820d12cb4279f5",
+          "original_end_seconds": 239.81569160997734,
+          "label_projection": {
+            "Bb:maj": "A#:maj",
+            "C:maj": "C:maj",
+            "F:maj": "F:maj",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": []
+        }
+      }
+    },
+    {
+      "id": "1003",
+      "included": false,
+      "reasons": [
+        "Ground-Truth: Ground-Truth/1003.lab: invalid three-column lab text"
+      ],
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1003.lab",
+          "sha256": "50b03f5bf67040c9296f1c8fbe799d9028c085177eb58a4a7030162ac981bb22"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1003.lab",
+          "sha256": "0478508dffb11b1840ee26adfa58b9359d4584166d5bba70e966945c73b87c0c",
+          "original_end_seconds": 217.5,
+          "label_projection": {
+            "A#:maj": "A#:maj",
+            "A#:min": "A#:min",
+            "C#:maj": "C#:maj",
+            "C:maj": "C:maj",
+            "C:min": "C:min",
+            "D#:maj": "D#:maj",
+            "F#:maj": "F#:maj",
+            "F:maj": "F:maj",
+            "F:min": "F:min",
+            "G#:maj": "G#:maj",
+            "G:maj": "G:maj",
+            "G:min": "G:min",
+            "N": "N"
+          },
+          "rounding_adjustments": []
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1003.lab",
+          "sha256": "a144a0fcd40f7dfed3ffa6d1c80dea314b1ba16e19075bc774ad15b5fe4dbc53",
+          "original_end_seconds": 217.50131519274376,
+          "label_projection": {
+            "Ab:maj": "G#:maj",
+            "Ab:maj(2)/2": "G#:maj",
+            "Ab:maj/2": "G#:maj",
+            "Ab:maj7": "G#:maj",
+            "Bb:11": "A#:maj",
+            "Bb:7": "A#:maj",
+            "Bb:maj": "A#:maj",
+            "Bb:maj/2": "A#:maj",
+            "Bb:min": "A#:min",
+            "Bb:min7": "A#:min",
+            "C#:maj": "C#:maj",
+            "C#:maj7": "C#:maj",
+            "C:7": "C:maj",
+            "C:min": "C:min",
+            "C:min/4": "C:min",
+            "C:min7": "C:min",
+            "Eb:maj": "D#:maj",
+            "F#:maj7": "F#:maj",
+            "F:min": "F:min",
+            "F:min7": "F:min",
+            "G:min": "G:min",
+            "G:min7": "G:min",
+            "N": "N"
+          },
+          "rounding_adjustments": []
+        }
+      }
+    },
+    {
+      "id": "1006",
+      "included": true,
+      "reasons": [],
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1006.lab",
+          "sha256": "92f9a90e704ca0e535e9dcb749f5f0a996d7fc420d76efa44737b3bc3923bfd5",
+          "original_end_seconds": 164.048979591,
+          "label_projection": {
+            "Ab:7": "G#:maj",
+            "Db:7": "C#:maj",
+            "Db:maj": "C#:maj",
+            "Gb:maj": "F#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 164.0,
+          "removed_tail_seconds": 0.048979591000005485,
+          "prepared_sha256": "031c8648f37b707e5019a481b9c46b798341e767907adb3a365e2458d159c718"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1006.lab",
+          "sha256": "3f1b8acfa10197ee34020ff76af2419d59fc58109ee25b078e2baecef9f640ba",
+          "original_end_seconds": 164.0,
+          "label_projection": {
+            "C#:maj": "C#:maj",
+            "F#:maj": "F#:maj",
+            "G#:maj": "G#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 164.0,
+          "removed_tail_seconds": 0.0,
+          "prepared_sha256": "53d4db3a54ddfbe1aa4358f1f76fd634bd7e4ee9130893797c642b470fa88dbc"
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1006.lab",
+          "sha256": "9de21dee77396e389f7beb050ad4e07b4a9968c3b8b8cc2b6abaa421041f0097",
+          "original_end_seconds": 164.0025396825397,
+          "label_projection": {
+            "Ab:7": "G#:maj",
+            "Ab:maj": "G#:maj",
+            "C#:7": "C#:maj",
+            "C#:maj": "C#:maj",
+            "F#:maj": "F#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 164.0,
+          "removed_tail_seconds": 0.002539682539691057,
+          "prepared_sha256": "bc3d0bf4654de96979408f760b998e9cfc4293b2975d4c0f9b98c93bb8c76a37"
+        }
+      }
+    },
+    {
+      "id": "1007",
+      "included": true,
+      "reasons": [],
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1007.lab",
+          "sha256": "fc96c56800aff4c0615d265dc35acbb796052e6c458c8090108a231db40b56ab",
+          "original_end_seconds": 218.331428571,
+          "label_projection": {
+            "A:min": "A:min",
+            "C:7": "C:maj",
+            "C:maj": "C:maj",
+            "E:min": "E:min",
+            "Eb:maj": "D#:maj",
+            "F:maj": "F:maj",
+            "F:min": "F:min",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 218.3,
+          "removed_tail_seconds": 0.03142857099999219,
+          "prepared_sha256": "6bfc1501e350b6adf56471336a5aa65a0b21d96db7508c904ce21ce5b2b1fef5"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1007.lab",
+          "sha256": "656ae07e8998c760c11f04fefc04f49fc60d4118bc748e98729603145ec3054a",
+          "original_end_seconds": 218.3,
+          "label_projection": {
+            "A#:maj": "A#:maj",
+            "A:min": "A:min",
+            "C:maj": "C:maj",
+            "D#:maj": "D#:maj",
+            "E:min": "E:min",
+            "F:maj": "F:maj",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 218.3,
+          "removed_tail_seconds": 0.0,
+          "prepared_sha256": "efe87c6fd2c550f87c4e8ab2f35edfa8d2125d18eaff7ee932b65ab963aacc0b"
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1007.lab",
+          "sha256": "495f5b8ce119fcba768be5f41b02481fae1524c192f17fdd57f50b1831a76ee2",
+          "original_end_seconds": 218.31401360544217,
+          "label_projection": {
+            "A:min": "A:min",
+            "C:7": "C:maj",
+            "C:maj": "C:maj",
+            "E:min": "E:min",
+            "Eb:maj": "D#:maj",
+            "F:maj": "F:maj",
+            "G:7": "G:maj",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 218.3,
+          "removed_tail_seconds": 0.014013605442158905,
+          "prepared_sha256": "58fa9befbd7cc345ca3250227c5a00066f2394e2d333da9a061a930848b8da79"
+        }
+      }
+    },
+    {
+      "id": "1009",
+      "included": false,
+      "reasons": [
+        "Ground-Truth: Ground-Truth/1009.lab: invalid three-column lab text",
+        "FK2: FK2/1009.lab: line 95: require 0 <= start < end"
+      ],
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1009.lab",
+          "sha256": "c9a6f3a64f74ea5ed37af69a954cb29eb754fc4199b7b4e3de7259310395dd75"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1009.lab",
+          "sha256": "7f54b9e4c277429cc9c129573d1d8c7123ff28bce668794f408247451e21c7c3"
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1009.lab",
+          "sha256": "f429276a7e9cdfa29f244ad039ac0dec0a6ee6a6e0d09b34ea9f487568a22301",
+          "original_end_seconds": 181.44072562358278,
+          "label_projection": {
+            "Ab:maj": "G#:maj",
+            "Ab:maj/3": "G#:maj",
+            "Ab:min": "G#:min",
+            "Bb:maj": "A#:maj",
+            "C:min": "C:min",
+            "C:min/b7": "C:min",
+            "Eb:maj": "D#:maj",
+            "Eb:maj/3": "D#:maj",
+            "Eb:maj/5": "D#:maj",
+            "F:maj/3": "F:maj",
+            "F:min": "F:min",
+            "G:min": "G:min",
+            "N": "N"
+          },
+          "rounding_adjustments": []
+        }
+      }
+    },
+    {
+      "id": "1011",
+      "included": true,
+      "reasons": [],
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1011.lab",
+          "sha256": "15aea5d1434da4ea63dd0c04f4d727acbbd14c66fa48a3be1f394047c458c696",
+          "original_end_seconds": 252.813061224,
+          "label_projection": {
+            "Ab:maj": "G#:maj",
+            "C:min": "C:min",
+            "Db:maj": "C#:maj",
+            "Eb:maj": "D#:maj",
+            "F:min": "F:min",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 252.7956462585034,
+          "removed_tail_seconds": 0.0174149654965845,
+          "prepared_sha256": "56becafd01b704af88384a295050945c2b134f64bc3f55cc1d968beb938565c4"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1011.lab",
+          "sha256": "96c0839da06c06bf5b2642d9e5d0721321dcab6df5b626ebb268753c4635ff8b",
+          "original_end_seconds": 252.8,
+          "label_projection": {
+            "C#:maj": "C#:maj",
+            "C:min": "C:min",
+            "D#:maj": "D#:maj",
+            "F:min": "F:min",
+            "G#:maj": "G#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 252.7956462585034,
+          "removed_tail_seconds": 0.00435374149660106,
+          "prepared_sha256": "fb2c473163926192b6079591a33ad1e039e04233384d6dce3c7195ce72ab1e6e"
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1011.lab",
+          "sha256": "2b823502cc03d784683ceb3337369035d90b52a808c929d47f26a7b8badb5462",
+          "original_end_seconds": 252.7956462585034,
+          "label_projection": {
+            "Ab:maj": "G#:maj",
+            "C#:maj": "C#:maj",
+            "C:min": "C:min",
+            "Eb:maj": "D#:maj",
+            "F:min": "F:min",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 252.7956462585034,
+          "removed_tail_seconds": 0.0,
+          "prepared_sha256": "117423225300471ffe48945bdf83dfc686e9483b74bc880f0170a1af7c7758ac"
+        }
+      }
+    }
+  ],
+  "imported": [
+    {
+      "id": "1006",
+      "evaluated_end_seconds": 164.0,
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1006.lab",
+          "sha256": "92f9a90e704ca0e535e9dcb749f5f0a996d7fc420d76efa44737b3bc3923bfd5",
+          "original_end_seconds": 164.048979591,
+          "label_projection": {
+            "Ab:7": "G#:maj",
+            "Db:7": "C#:maj",
+            "Db:maj": "C#:maj",
+            "Gb:maj": "F#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 164.0,
+          "removed_tail_seconds": 0.048979591000005485,
+          "prepared_sha256": "031c8648f37b707e5019a481b9c46b798341e767907adb3a365e2458d159c718"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1006.lab",
+          "sha256": "3f1b8acfa10197ee34020ff76af2419d59fc58109ee25b078e2baecef9f640ba",
+          "original_end_seconds": 164.0,
+          "label_projection": {
+            "C#:maj": "C#:maj",
+            "F#:maj": "F#:maj",
+            "G#:maj": "G#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 164.0,
+          "removed_tail_seconds": 0.0,
+          "prepared_sha256": "53d4db3a54ddfbe1aa4358f1f76fd634bd7e4ee9130893797c642b470fa88dbc"
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1006.lab",
+          "sha256": "9de21dee77396e389f7beb050ad4e07b4a9968c3b8b8cc2b6abaa421041f0097",
+          "original_end_seconds": 164.0025396825397,
+          "label_projection": {
+            "Ab:7": "G#:maj",
+            "Ab:maj": "G#:maj",
+            "C#:7": "C#:maj",
+            "C#:maj": "C#:maj",
+            "F#:maj": "F#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 164.0,
+          "removed_tail_seconds": 0.002539682539691057,
+          "prepared_sha256": "bc3d0bf4654de96979408f760b998e9cfc4293b2975d4c0f9b98c93bb8c76a37"
+        }
+      }
+    },
+    {
+      "id": "1007",
+      "evaluated_end_seconds": 218.3,
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1007.lab",
+          "sha256": "fc96c56800aff4c0615d265dc35acbb796052e6c458c8090108a231db40b56ab",
+          "original_end_seconds": 218.331428571,
+          "label_projection": {
+            "A:min": "A:min",
+            "C:7": "C:maj",
+            "C:maj": "C:maj",
+            "E:min": "E:min",
+            "Eb:maj": "D#:maj",
+            "F:maj": "F:maj",
+            "F:min": "F:min",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 218.3,
+          "removed_tail_seconds": 0.03142857099999219,
+          "prepared_sha256": "6bfc1501e350b6adf56471336a5aa65a0b21d96db7508c904ce21ce5b2b1fef5"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1007.lab",
+          "sha256": "656ae07e8998c760c11f04fefc04f49fc60d4118bc748e98729603145ec3054a",
+          "original_end_seconds": 218.3,
+          "label_projection": {
+            "A#:maj": "A#:maj",
+            "A:min": "A:min",
+            "C:maj": "C:maj",
+            "D#:maj": "D#:maj",
+            "E:min": "E:min",
+            "F:maj": "F:maj",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 218.3,
+          "removed_tail_seconds": 0.0,
+          "prepared_sha256": "efe87c6fd2c550f87c4e8ab2f35edfa8d2125d18eaff7ee932b65ab963aacc0b"
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1007.lab",
+          "sha256": "495f5b8ce119fcba768be5f41b02481fae1524c192f17fdd57f50b1831a76ee2",
+          "original_end_seconds": 218.31401360544217,
+          "label_projection": {
+            "A:min": "A:min",
+            "C:7": "C:maj",
+            "C:maj": "C:maj",
+            "E:min": "E:min",
+            "Eb:maj": "D#:maj",
+            "F:maj": "F:maj",
+            "G:7": "G:maj",
+            "G:maj": "G:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 218.3,
+          "removed_tail_seconds": 0.014013605442158905,
+          "prepared_sha256": "58fa9befbd7cc345ca3250227c5a00066f2394e2d333da9a061a930848b8da79"
+        }
+      }
+    },
+    {
+      "id": "1011",
+      "evaluated_end_seconds": 252.7956462585034,
+      "sources": {
+        "Ground-Truth": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/Ground-Truth/1011.lab",
+          "sha256": "15aea5d1434da4ea63dd0c04f4d727acbbd14c66fa48a3be1f394047c458c696",
+          "original_end_seconds": 252.813061224,
+          "label_projection": {
+            "Ab:maj": "G#:maj",
+            "C:min": "C:min",
+            "Db:maj": "C#:maj",
+            "Eb:maj": "D#:maj",
+            "F:min": "F:min",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 252.7956462585034,
+          "removed_tail_seconds": 0.0174149654965845,
+          "prepared_sha256": "56becafd01b704af88384a295050945c2b134f64bc3f55cc1d968beb938565c4"
+        },
+        "FK2": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/FK2/1011.lab",
+          "sha256": "96c0839da06c06bf5b2642d9e5d0721321dcab6df5b626ebb268753c4635ff8b",
+          "original_end_seconds": 252.8,
+          "label_projection": {
+            "C#:maj": "C#:maj",
+            "C:min": "C:min",
+            "D#:maj": "D#:maj",
+            "F:min": "F:min",
+            "G#:maj": "G#:maj",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 252.7956462585034,
+          "removed_tail_seconds": 0.00435374149660106,
+          "prepared_sha256": "fb2c473163926192b6079591a33ad1e039e04233384d6dce3c7195ce72ab1e6e"
+        },
+        "JLCX1": {
+          "url": "https://raw.githubusercontent.com/ismir-mirex/ace-output/be7f0e929d3452697f07a227cf1b533426eb2022/2018/Billboard2012/JLCX1/1011.lab",
+          "sha256": "2b823502cc03d784683ceb3337369035d90b52a808c929d47f26a7b8badb5462",
+          "original_end_seconds": 252.7956462585034,
+          "label_projection": {
+            "Ab:maj": "G#:maj",
+            "C#:maj": "C#:maj",
+            "C:min": "C:min",
+            "Eb:maj": "D#:maj",
+            "F:min": "F:min",
+            "N": "N"
+          },
+          "rounding_adjustments": [],
+          "evaluated_end_seconds": 252.7956462585034,
+          "removed_tail_seconds": 0.0,
+          "prepared_sha256": "117423225300471ffe48945bdf83dfc686e9483b74bc880f0170a1af7c7758ac"
+        }
+      }
+    }
+  ]
+}

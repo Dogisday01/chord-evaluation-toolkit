@@ -39,6 +39,10 @@ computed from the bytes actually used. The split declaration does not independen
 verify dataset separation. During development, use validation for model choices;
 test data belongs to the final frozen comparison described in Assignment 2.
 
+Optional `data_provenance` contains string fields source, source_revision,
+preparation, selection and audit_file. Reports preserve these caller declarations
+and show them in HTML; they do not independently authenticate source claims.
+
 Macro averages the per-record scores with equal recording weights. Micro averages
 them with duration weights, giving each second equal weight. Both are reported;
 they can disagree, so there is no automatic universal winner. Comparison deltas
@@ -79,12 +83,18 @@ not claimed to match even when scores do.
 
 ## Reports and compatibility
 
-Schema 1.1 adds kind, diagnostics and protocol ID to the previous pair report.
+Schema 1.1 added kind, diagnostics and protocol ID to the previous pair report.
+Schema 1.2 adds [descriptive analysis](analysis.md) and declared data provenance.
 Existing pair metrics, aligned intervals and CLI commands retain their behavior.
 Collection reports are a distinct kind, with models, records, summary and comparison.
 The offline HTML embeds the same JSON, uses no external assets and supports recording,
 model and interval selection, time windows and embedded JSON viewing. Exported HTML is a
 local report artifact, consistent with the optional plots in Assignment 2.
+
+The real-data demo has a separate explicit Harte projection/common-coverage
+preparation audit. The evaluator never performs this projection or cropping
+implicitly. Its resulting scores concern prepared excerpts rather than full
+original recordings or official MIREX corpus metrics.
 
 Each output is fully staged and published without overwriting. When publishing JSON
 and HTML, an ordinary I/O failure removes outputs newly created by that operation;

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "mirex2018_billboard2012_three_record_demo",
+  "split": "test",
+  "protocol_id": "major_minor_n_v1",
+  "data_provenance": {
+    "source": "https://github.com/ismir-mirex/ace-output/tree/master/2018/Billboard2012",
+    "source_revision": "be7f0e929d3452697f07a227cf1b533426eb2022",
+    "preparation": "Harte pitch set must contain exactly one complete major/minor triad; discard additional tones and bass; canonical roots; common [0,min(end)] coverage; no padding, shifts or internal exclusions",
+    "selection": "first three filenames in lexical order with fully projectable labels, strict continuous input and endpoint spread <=0.1 s; no scores used",
+    "audit_file": "preparation_audit.json"
+  },
+  "models": {
+    "FK2": {
+      "description": "Published MIREX 2018 FK2 output; evaluated after declared major/minor projection and common-coverage preparation"
+    },
+    "JLCX1": {
+      "description": "Published MIREX 2018 JLCX1 output; evaluated after declared major/minor projection and common-coverage preparation"
+    }
+  },
+  "tracks": [
+    {
+      "id": "1006",
+      "reference": "prepared/Ground-Truth/1006.lab",
+      "predictions": {
+        "FK2": "prepared/FK2/1006.lab",
+        "JLCX1": "prepared/JLCX1/1006.lab"
+      }
+    },
+    {
+      "id": "1007",
+      "reference": "prepared/Ground-Truth/1007.lab",
+      "predictions": {
+        "FK2": "prepared/FK2/1007.lab",
+        "JLCX1": "prepared/JLCX1/1007.lab"
+      }
+    },
+    {
+      "id": "1011",
+      "reference": "prepared/Ground-Truth/1011.lab",
+      "predictions": {
+        "FK2": "prepared/FK2/1011.lab",
+        "JLCX1": "prepared/JLCX1/1011.lab"
+      }
+    }
+  ]
+}

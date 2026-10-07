@@ -7,8 +7,11 @@ from .models import AnnotationError
 
 
 def render_html(report: dict) -> str:
-    if report.get("kind") not in ("pair", "collection") or report.get("schema_version") != "1.1":
-        raise AnnotationError("HTML export requires a toolkit schema 1.1 report")
+    if report.get("kind") not in ("pair", "collection") or report.get("schema_version") not in (
+        "1.1",
+        "1.2",
+    ):
+        raise AnnotationError("HTML export requires a toolkit schema 1.1 or 1.2 report")
     payload = json.dumps(report, ensure_ascii=True, allow_nan=False)
     # An input filename/description must not close the data script element.
     payload = payload.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
