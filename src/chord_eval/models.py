@@ -21,6 +21,7 @@ class Annotation:
     sha256: str
     segments: tuple[Segment, ...]
     adjustments: tuple[dict, ...]
+    hash_representation: str = "original_utf8_lab_bytes"
 
     @property
     def duration(self) -> float:

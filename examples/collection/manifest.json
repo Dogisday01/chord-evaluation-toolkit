@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "synthetic-contract-demo",
+  "split": "validation",
+  "protocol_id": "major_minor_n_v1",
+  "models": {
+    "baseline": {"description": "Authored synthetic predictions, not a trained model"},
+    "candidate": {"description": "Alternative synthetic predictions, not a trained model"}
+  },
+  "tracks": [
+    {"id": "long", "reference": "long_ref.lab", "predictions": {"baseline": "long_baseline.lab", "candidate": "long_candidate.lab"}},
+    {"id": "short", "reference": "short_ref.lab", "predictions": {"baseline": "short_baseline.lab", "candidate": "short_candidate.lab"}},
+    {"id": "boundary", "reference": "boundary_ref.lab", "predictions": {"baseline": "boundary_baseline.lab", "candidate": "boundary_candidate.lab"}}
+  ]
+}

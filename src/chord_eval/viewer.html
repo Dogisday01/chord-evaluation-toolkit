@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'">
+<title>Chord Evaluation Report</title>
+<style>
+:root{font-family:Segoe UI,Arial,sans-serif;color:#172b40;background:#f4f7fa;font-size:16px}
+*{box-sizing:border-box}body{margin:0}main{max-width:1200px;margin:0 auto;padding:36px 24px 60px}
+h1{font-size:32px;letter-spacing:-.7px;margin:8px 0 12px}h2{font-size:21px;margin:0 0 14px}
+h3{font-size:16px;margin:20px 0 10px}p{line-height:1.55;margin:8px 0}.eyebrow{font-size:12px;letter-spacing:1.6px;font-weight:700;color:#41617f}
+.muted{color:#536980}.card{background:white;border:1px solid #dce4eb;border-radius:12px;padding:24px;margin-top:20px;box-shadow:0 3px 12px #18324b05}
+.toolbar{display:flex;gap:16px;flex-wrap:wrap;align-items:end}label{display:grid;gap:6px;font-size:13px;font-weight:600}
+select,button{font:inherit;color:inherit;border:1px solid #b8c9d8;border-radius:6px;background:white;padding:9px 12px;min-height:40px}
+button{cursor:pointer}button:hover{background:#eaf2fa}select{min-width:170px}.toolbar button{margin-left:auto}
+.scores{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:14px;margin:20px 0}
+.score{background:#f2f6fa;border-radius:8px;padding:16px}.score strong{display:block;font-size:25px;margin-top:6px}.score span{font-size:13px;color:#536980}
+.notice{border-left:4px solid #3872a1;background:#edf5fc;padding:12px 16px;border-radius:4px}.notice.bad{border-color:#bf3b4a;background:#fff0f2}
+.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e2e8ee;white-space:nowrap}th{background:#f3f6f9;color:#41617f;font-weight:600}tbody tr:last-child td{border-bottom:0}
+tr.actionable{cursor:pointer}tr.actionable:hover{background:#edf5fc}tr.selected{background:#e3f0fc}
+.legend{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;margin:14px 0}.dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.svg-wrap{overflow:auto}svg{display:block;width:100%;min-width:800px}.segment{cursor:pointer}.segment:focus{outline:3px solid #103452;outline-offset:1px}
+#selection{min-height:44px;background:#f3f6f9;border-radius:6px;padding:12px;margin-top:10px;font-size:14px}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.empty{color:#536980;padding:16px 0}.footer{font-size:12px;color:#536980;margin-top:24px;overflow-wrap:anywhere}
+@media(max-width:760px){main{padding:24px 14px}.card{padding:18px}.scores{grid-template-columns:repeat(2,1fr)}.details-grid{grid-template-columns:1fr}h1{font-size:27px}.toolbar button{margin-left:0}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">CHORD EVALUATION TOOLKIT</div>
+<h1>Inspect predictions. Understand disagreements.</h1>
+<p class="muted" id="subtitle"></p>
+<p class="notice">This report compares supplied annotations. Scores depend on the reference and protocol; synthetic examples demonstrate calculation behavior.</p>
+<section class="card" id="collection" hidden><h2>Collection results</h2><div id="collectionContent"></div></section>
+<section class="card"><div class="toolbar">
+<label>Recording<select id="track"></select></label><label>Prediction model<select id="model"></select></label>
+<button id="download" type="button">Save JSON</button></div>
+<div id="invalid"></div><div id="pairContent">
+<div class="scores" id="scores"></div>
+<h2>Chord timeline</h2><p class="muted">Select an interval or an error row to inspect its times and labels. Use the time window for dense recordings.</p>
+<div class="toolbar"><label>Time window<select id="window"><option value="full">Full recording</option><option value="30">30 seconds</option><option value="10">10 seconds</option></select></label><label>Window start<input id="start" type="range" min="0" max="0" step="0.1" value="0"></label><button id="reset" type="button">Show full recording</button></div>
+<div class="legend"><span><i class="dot" style="background:#5587ad"></i>Reference</span><span><i class="dot" style="background:#21846c"></i>Match</span><span><i class="dot" style="background:#c74b5c"></i>Disagreement</span></div>
+<div class="svg-wrap"><svg id="timeline" viewBox="0 0 1000 175" role="img" aria-label="Reference and prediction chord timelines"></svg></div>
+<div id="selection" role="status" aria-live="polite">Select an interval to inspect it.</div>
+<h3>Error intervals</h3><p class="muted">Wrong root can include a wrong quality. Categories are mutually exclusive; durations count seconds, not rows.</p><div id="errors"></div>
+<div class="details-grid"><section><h3>Chord confusions</h3><div id="confusions"></div></section><section><h3>Recall by reference chord</h3><div id="perChord"></div></section></div>
+<h3>Segmentation</h3><p id="segmentation" class="muted"></p>
+</div></section>
+<div class="footer" id="provenance"></div>
+</main>
+<script id="report-data" type="application/json">__REPORT_DATA__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('report-data').textContent);
+const $=id=>document.getElementById(id), pct=n=>(100*n).toFixed(2)+'%', sec=n=>Number(n.toFixed(6)).toString()+' s';
+const names={wrong_root:'Wrong root',wrong_quality:'Wrong major/minor',missed_chord:'Missed chord',false_chord:'Chord predicted during N'};
+const records=data.kind==='pair'?[{id:'Single recording',status:'valid',evaluations:{prediction:data},errors:[]}]:data.records;
+let current=null;
+function node(tag,text,cls){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
+function table(headers,rows,onClick){const wrap=node('div',undefined,'table-wrap'),t=node('table'),head=node('thead'),tr=node('tr');headers.forEach(h=>tr.append(node('th',h)));head.append(tr);t.append(head);const body=node('tbody');rows.forEach((values,index)=>{const row=node('tr');values.forEach(v=>row.append(node('td',v)));if(onClick){row.className='actionable';row.tabIndex=0;const select=()=>{body.querySelectorAll('.selected').forEach(e=>e.classList.remove('selected'));row.classList.add('selected');onClick(index);};row.addEventListener('click',select);row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}});}body.append(row);});t.append(body);wrap.append(t);return wrap;}
+function option(select,value,text){const o=node('option',text);o.value=value;select.append(o);}
+function detail(s){$('selection').textContent=sec(s.start)+' – '+sec(s.end)+': reference '+s.reference+'; prediction '+s.prediction+(s.category?' · '+names[s.category]:' · '+(s.major_minor_match===1?'Match':'Disagreement'));}
+function focusError(s){detail(s);$('window').value='10';const width=10;$('start').max=Math.max(0,current.duration_seconds-width);$('start').value=Math.max(0,s.start-1);drawTimeline();}
+function svgEl(tag,attrs,text){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));if(text!==undefined)e.textContent=text;return e;}
+function drawTimeline(){if(!current)return;const svg=$('timeline');svg.replaceChildren();const duration=current.duration_seconds;const width=$('window').value==='full'?duration:Math.min(duration,Number($('window').value));$('start').max=Math.max(0,duration-width);const from=Number($('start').value),to=Math.min(duration,from+width);const x=t=>90+(t-from)/width*890;
+svg.append(svgEl('text',{x:0,y:40,'font-size':14,fill:'#41617f'},'Reference'));svg.append(svgEl('text',{x:0,y:105,'font-size':14,fill:'#41617f'},'Prediction'));
+current.aligned_segments.forEach(s=>{if(s.end<=from||s.start>=to)return;const start=Math.max(from,s.start),end=Math.min(to,s.end),w=x(end)-x(start);[['reference',20,'#5587ad'],['prediction',85,s.major_minor_match===1?'#21846c':'#c74b5c']].forEach(([role,y,color])=>{const r=svgEl('rect',{x:x(start),y,width:w,height:42,fill:color,stroke:'white','stroke-width':.5,class:'segment',tabindex:0,role:'button','aria-label':s[role]+' '+sec(s.start)+' to '+sec(s.end)});r.append(svgEl('title',{},s[role]+'; '+sec(s.start)+'–'+sec(s.end)));r.addEventListener('click',()=>detail(s));r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();detail(s);}});svg.append(r);if(w>48)svg.append(svgEl('text',{x:x(start)+w/2,y:y+26,'text-anchor':'middle','font-size':16,fill:'white','pointer-events':'none'},s[role]));});});
+for(let i=0;i<=5;i++){const t=from+width*i/5;svg.append(svgEl('text',{x:x(t),y:157,'text-anchor':i===0?'start':i===5?'end':'middle','font-size':16,fill:'#536980'},sec(t)));}}
+function showPair(){const record=records.find(r=>r.id===$('track').value);current=record.evaluations[$('model').value]||null;$('pairContent').hidden=!current;$('invalid').replaceChildren();if(record.errors.length){$('invalid').append(node('p',record.errors.map(e=>(e.model?e.model+': ':'')+e.message).join(' | '),'notice bad'));}if(!current)return;
+$('scores').replaceChildren();[['Root match',pct(current.metrics.root)],['Major/minor match',pct(current.metrics.major_minor)],['Duration',sec(current.duration_seconds)],['Error intervals',String(current.diagnostics.error_regions.length)]].forEach(([label,value])=>{const box=node('div',undefined,'score');box.append(node('span',label),node('strong',value));$('scores').append(box);});$('start').value=0;$('window').value='full';drawTimeline();$('selection').textContent='Select an interval to inspect it.';
+const errors=current.diagnostics.error_regions;$('errors').replaceChildren(errors.length?table(['Start','End','Reference','Prediction','Reason','Duration'],errors.map(s=>[sec(s.start),sec(s.end),s.reference,s.prediction,names[s.category],sec(s.duration_seconds)]),i=>focusError(errors[i])):node('p','No chord-label disagreements.','empty'));
+const confusion=current.diagnostics.confusion_seconds.filter(c=>c.reference!==c.prediction).sort((a,b)=>b.seconds-a.seconds);$('confusions').replaceChildren(confusion.length?table(['Reference','Prediction','Duration'],confusion.map(c=>[c.reference,c.prediction,sec(c.seconds)])):node('p','No chord confusions.','empty'));
+$('perChord').replaceChildren(table(['Chord','Reference time','Recall'],current.diagnostics.per_chord.map(c=>[c.label,sec(c.reference_seconds),c.recall===null?'No reference support':pct(c.recall)])));
+const s=current.diagnostics.segmentation;$('segmentation').textContent='Overseg: '+pct(s.overseg)+' · Underseg: '+pct(s.underseg)+' · Combined: '+pct(s.seg)+'. Higher is better. Adjacent equivalent chords are merged; these scores assess segmentation, not chord-label correctness.';}
+function chooseTrack(){const record=records.find(r=>r.id===$('track').value);const prior=$('model').value;$('model').replaceChildren();const modelIDs=data.kind==='pair'?['prediction']:Object.keys(data.models);modelIDs.forEach(id=>option($('model'),id,id+(record.evaluations[id]?'':' (unavailable)')));if(modelIDs.includes(prior))$('model').value=prior;showPair();}
+records.forEach(r=>option($('track'),r.id,r.id+(r.status==='invalid'?' (invalid)':'')));
+$('track').addEventListener('change',chooseTrack);$('model').addEventListener('change',showPair);$('window').addEventListener('change',()=>{$('start').value=0;drawTimeline();});$('start').addEventListener('input',drawTimeline);$('reset').addEventListener('click',()=>{$('window').value='full';$('start').value=0;drawTimeline();});
+if(data.kind==='collection'){$('collection').hidden=false;$('subtitle').textContent=data.dataset.id+' · '+data.dataset.split+' · '+records.length+' declared recordings';const c=$('collectionContent');if(data.status!=='complete')c.append(node('p','INCOMPLETE: aggregate scores and comparisons are unavailable. Fix every invalid record; individual results remain inspectable.','notice bad'));else{c.append(table(['Model','Tracks','Duration','Macro root','Micro root','Macro major/minor','Micro major/minor'],Object.entries(data.summary).map(([id,s])=>[id,s.track_count,sec(s.duration_seconds),pct(s.macro.root),pct(s.micro.root),pct(s.macro.major_minor),pct(s.micro.major_minor)])));c.append(node('p','Macro gives each recording equal weight. Micro gives each second equal weight.','muted'));}if(data.comparison){const comparison=data.comparison;c.append(node('h3',comparison.candidate+' compared with '+comparison.baseline));c.append(table(['Weighting','Root change','Major/minor change'],['macro','micro'].map(w=>[w,(comparison.aggregate_delta[w].root*100).toFixed(2)+' pp',(comparison.aggregate_delta[w].major_minor*100).toFixed(2)+' pp'])));c.append(node('p','Changes are candidate minus baseline, in percentage points. These are descriptive results, without a significance claim.','muted'));c.append(table(['Recording','Root change','Major/minor change'],comparison.track_changes.map(t=>[t.track_id,(t.delta.root*100).toFixed(2)+' pp',(t.delta.major_minor*100).toFixed(2)+' pp']),i=>{$('track').value=comparison.track_changes[i].track_id;chooseTrack();}));}}else $('subtitle').textContent=data.inputs.reference.name+' compared with '+data.inputs.prediction.name;
+$('provenance').textContent='Tool '+data.tool.version+' · Schema '+data.schema_version+' · Protocol '+data.protocol.id+' · Revision '+(data.tool.code_revision||'not supplied')+' · Created '+data.run.created_at_utc+'. Input hashes and dependency versions are retained in the embedded JSON.';
+$('download').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=node('a');a.href=url;a.download='chord-evaluation-report.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+chooseTrack();
+</script></body></html>

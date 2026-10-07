@@ -7,8 +7,8 @@ from dataclasses import replace
 import mir_eval
 
 from .models import AnnotationError, Segment
+from .protocol import TIME_TOLERANCE
 
-TIME_TOLERANCE = 1e-9
 LABEL_PATTERN = re.compile(r"(?:[A-G](?:#|b)?:(?:maj|min)|N)\Z")
 
 

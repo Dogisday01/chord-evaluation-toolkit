@@ -1,5 +1,5 @@
 include requirements-dev.txt
-recursive-include examples *.lab
+recursive-include examples *.lab *.json *.py
 recursive-include scripts *.py
 recursive-include docs *.md
 recursive-include .github *.yml *.md

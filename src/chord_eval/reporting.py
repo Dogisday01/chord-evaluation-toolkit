@@ -9,7 +9,15 @@ from importlib.metadata import version
 from pathlib import Path
 
 from . import __version__
-from .validation import TIME_TOLERANCE
+from .diagnostics import diagnose
+from .protocol import protocol_record
+
+
+def environment_record() -> dict:
+    return {
+        "python": platform.python_version(),
+        **{name: version(name) for name in ("mir_eval", "numpy", "scipy", "decorator")},
+    }
 
 
 def build_report(result: dict, code_revision: str | None = None) -> dict:
@@ -19,30 +27,25 @@ def build_report(result: dict, code_revision: str | None = None) -> dict:
         inputs[role] = {
             "name": item.name,
             "sha256": item.sha256,
+            "hash_representation": item.hash_representation,
             "interval_count": len(item.segments),
             "boundary_adjustments": list(item.adjustments),
         }
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
+        "kind": "pair",
         "tool": {
             "name": "chord-evaluation-toolkit",
             "version": __version__,
             "code_revision": code_revision,
         },
-        "environment": {
-            "python": platform.python_version(),
-            **{name: version(name) for name in ("mir_eval", "numpy", "scipy", "decorator")},
-        },
-        "protocol": {
-            "alphabet": "explicit major/minor/no-chord; no inversions",
-            "coverage": "strict continuous [0, T]",
-            "weighting": "duration_seconds",
-            "boundary_tolerance_seconds": TIME_TOLERANCE,
-        },
+        "environment": environment_record(),
+        "protocol": protocol_record(),
         "inputs": inputs,
         "duration_seconds": result["duration_seconds"],
         "metrics": result["metrics"],
         "aligned_segments": result["aligned_segments"],
+        "diagnostics": diagnose(result),
         "run": {"created_at_utc": datetime.now(timezone.utc).isoformat()},
     }
 
@@ -54,18 +57,38 @@ def write_report(report: dict, path: str | Path) -> None:
     complete bytes with create-if-absent semantics (NTFS and Linux supported).
     Unsupported filesystems fail explicitly; no partial target is written.
     """
-    target = Path(path)
     payload = (json.dumps(report, indent=2, allow_nan=False) + "\n").encode("utf-8")
-    temporary = None
+    write_outputs({Path(path): payload})
+
+
+def write_outputs(outputs: dict[Path, bytes]) -> None:
+    """Publish complete files; roll back this operation's outputs on failure.
+
+    Each file is published atomically, not a multi-filesystem transaction. A
+    process interruption can leave a subset. Existing files are never replaced.
+    """
+    resolved = [p.resolve() for p in outputs]
+    if len(set(resolved)) != len(resolved):
+        raise OSError("JSON and HTML outputs must be different paths")
+    staged, created = [], []
     try:
-        with tempfile.NamedTemporaryFile(
-            dir=target.parent, prefix=".chord-eval-", delete=False
-        ) as f:
-            temporary = Path(f.name)
-            f.write(payload)
-            f.flush()
-            os.fsync(f.fileno())
-        os.link(temporary, target)
+        for target, payload in outputs.items():
+            with tempfile.NamedTemporaryFile(
+                dir=target.parent, prefix=".chord-eval-", delete=False
+            ) as f:
+                temporary = Path(f.name)
+                staged.append((target, temporary))
+                f.write(payload)
+                f.flush()
+                os.fsync(f.fileno())
+        for target, temporary in staged:
+            os.link(temporary, target)
+            created.append((target, temporary))
+    except OSError:
+        for target, temporary in reversed(created):
+            if target.exists() and target.samefile(temporary):
+                target.unlink()
+        raise
     finally:
-        if temporary is not None:
+        for _, temporary in staged:
             temporary.unlink(missing_ok=True)
