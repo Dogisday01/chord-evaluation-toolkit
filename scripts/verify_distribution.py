@@ -7,6 +7,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+import tomllib
 import venv
 from pathlib import Path
 
@@ -20,7 +21,8 @@ def main():
     parser.add_argument("--evidence", required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    wheels = list((root / "dist").glob("*.whl"))
+    package_version = tomllib.loads((root / "pyproject.toml").read_text())["project"]["version"]
+    wheels = list((root / "dist").glob(f"chord_evaluation_toolkit-{package_version}-*.whl"))
     if len(wheels) != 1:
         raise RuntimeError("expected exactly one built wheel in dist")
     wheel = wheels[0]
@@ -60,6 +62,47 @@ def main():
         )
         if rejected.returncode != 2 or (working / "bad.json").exists():
             raise RuntimeError("wheel did not reject invalid data without publishing a report")
+        shutil.copytree(root / "examples" / "collection", working / "collection")
+        run(
+            [
+                str(cli),
+                "compare",
+                "collection/manifest.json",
+                "--baseline",
+                "baseline",
+                "--candidate",
+                "candidate",
+                "--output",
+                "comparison.json",
+                "--html",
+                "comparison.html",
+            ],
+            working,
+            env,
+        )
+        comparison = json.loads((working / "comparison.json").read_text())
+        a, b = comparison["summary"]["baseline"], comparison["summary"]["candidate"]
+        if (
+            abs(a["micro"]["major_minor"] - 0.75) > 1e-12
+            or abs(b["micro"]["major_minor"] - 0.85) > 1e-12
+        ):
+            raise RuntimeError("installed wheel collection disagrees with hand-counted seconds")
+        html = (working / "comparison.html").read_text(encoding="utf-8")
+        if 'id="report-data"' not in html or "__REPORT_DATA__" in html:
+            raise RuntimeError("installed wheel did not deliver its offline viewer resource")
+        adapter = run(
+            [
+                str(python),
+                "-c",
+                "import json; from chord_eval.api import evaluate_intervals; "
+                "r=evaluate_intervals([(0,10,'C:maj')],[(0,10,'C:min')]); "
+                "print(json.dumps(r['metrics']))",
+            ],
+            working,
+            env,
+        )
+        if json.loads(adapter.stdout) != {"root": 1.0, "major_minor": 0.0}:
+            raise RuntimeError("installed public adapter violates the known-answer case")
         evidence = {
             "wheel": wheel.name,
             "sha256": hashlib.sha256(wheel.read_bytes()).hexdigest(),
@@ -68,6 +111,11 @@ def main():
             "example_metrics": report["metrics"],
             "invalid_gap_exit_code": 2,
             "environment": report["environment"],
+            "tool_version": report["tool"]["version"],
+            "collection_micro": {"baseline": a["micro"], "candidate": b["micro"]},
+            "collection_macro": {"baseline": a["macro"], "candidate": b["macro"]},
+            "html_resource": "exported from installed wheel",
+            "public_interval_api": "passed",
         }
     destination = Path(args.evidence)
     destination.parent.mkdir(parents=True, exist_ok=True)

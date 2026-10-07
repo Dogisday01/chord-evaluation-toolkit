@@ -14,8 +14,29 @@ Additional tests cover no-chord N, enharmonic roots, blank/BOM text, snapshot ha
 
 A separate deterministic oracle generates 30 pairs with integer-second boundaries. It expands each interval to per-second labels and counts matching roots and qualities. It does not call the package's temporal alignment or mir_eval comparisons to calculate expected results. Splitting equal-label intervals and positive time scaling are checked separately.
 
-On the local Windows Python 3.12.14 environment, the suite contains 46 passing pytest cases. The random-grid oracle is one of those cases and includes 30 comparisons. Local lint and format checks pass. Distribution verification installs the actual wheel into a new environment outside the checkout, checks dependency consistency, confirms that the imported package is inside that environment, executes the README example and rejects the invalid-gap fixture without creating a report.
+On the local Windows Python 3.12.14 environment, the suite contains 84 passing pytest cases (46 legacy and 38 extension cases). The random-grid oracle is one of those cases and includes 30 comparisons. Local lint and format checks pass. Distribution verification installs the actual wheel into a new environment outside the checkout, checks dependency consistency, confirms that the imported package is inside that environment, executes the README example and rejects the invalid-gap fixture without creating a report.
 
 Evidence files are generated under reports/: test-results.xml, distribution-check.json and example-report.json. They are excluded from Git because each run has its own timestamp and provenance. Source tests and verification commands are versioned. The configured GitHub matrix covers Linux Python 3.11/3.12/3.13 and Windows Python 3.12; local Windows evidence does not establish the outcome of those hosted jobs.
 
 Limits: tests verify evaluation behavior on synthetic annotation inputs. They do not establish chord recognition accuracy, dataset access, aligned ground truth quality, training reproducibility or GPU performance. Error messages and preserved reports are also part of observable correctness. Rendering and lint cannot independently prove a scientific score correct.
+
+
+Version 1.1 adds independently specified error categories, enharmonic confusion
+normalization, no-support recall, repeated-label segmentation invariance and the
+counterexample where segmentation=1 but chord accuracy=0. Collection fixtures have
+hand-counted correct seconds (8,4,5)/(8,2,5) for baseline root/quality and (10,2,5)
+for the candidate. They verify both macro and micro scores and paired deltas.
+Missing/malformed predictions suppress aggregates rather than improving a result
+by exclusion. Manifest ambiguity, API validation, safe HTML embedding and ordinary
+multi-output failure rollback have explicit negative cases.
+
+The installed-wheel verifier additionally runs collection comparison and offline
+HTML export, proving the template resource is packaged, and calls the public
+interval API. Browser QA checks recording/model selection, an error-row detail,
+time-window controls and JSON download against the generated report. A local
+preview server is only a QA aid; the final HTML works directly as an offline file.
+
+Acceptance criteria and expected values were fixed before coding in
+extension_acceptance.md. Model metadata and split declarations are retained but
+not independently verified. There is no automatic model-winner or significance
+claim. No training or checkpoint reload is demonstrated by these synthetic runs.

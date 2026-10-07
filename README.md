@@ -1,6 +1,6 @@
 # Chord Evaluation Toolkit
 
-Evaluate musical chord interval predictions against a reference and export a traceable JSON report. This scientific module continues the Evaluation and Reporting/Export components of the chord recognition project assessed in Assignment 2.
+Evaluate chord predictions, inspect disagreements and compare experiments across recordings. Version 1.1 continues the Evaluation and Reporting/Export components of the chord recognition project assessed in Assignment 2, with a shared protocol and a public adapter interface.
 
 It evaluates supplied annotations. It does not train a model, decode audio, or demonstrate recognition accuracy on a music dataset.
 
@@ -18,6 +18,7 @@ Activate with `.venv\Scripts\Activate.ps1` on Windows PowerShell or `source .ven
 python -m pip install .
 chord-eval validate examples/reference.lab examples/prediction.lab
 chord-eval evaluate examples/reference.lab examples/prediction.lab --output report.json
+chord-eval evaluate examples/reference.lab examples/prediction.lab --output detailed.json --html detailed.html
 ```
 
 Expected synthetic example: `root=0.800000; major_minor=0.800000`. Eight seconds of ten match. This is a known-answer example, not a model benchmark. Choose a new output filename for each run. An existing output is never overwritten.
@@ -26,7 +27,36 @@ To identify the code used, pass `--code-revision COMMIT_OR_TAG`. Record `git rev
 
 ## User behavior
 
-Select reference and prediction files → validate or evaluate → inspect scores and aligned intervals → save JSON. Invalid input produces an actionable error before scoring. These are operations of the finished tool; model training and repository management are development activities.
+Select reference/prediction files or a collection manifest → evaluate or compare → open the HTML report → select a recording/model/error interval → inspect and save results. The browser report works as a local file and needs no server, account or internet. Training and repository management remain development activities.
+
+The report identifies wrong roots, wrong major/minor quality, missed chords and false chords. It lists error intervals, the longest disagreements, time spent on chord confusions and recall by reference chord. Segmentation scores describe excess/missing changes, with repeated equivalent labels merged first. Higher is better; correct segmentation does not imply correct chord names.
+
+## Collections and model comparison
+
+```text
+chord-eval batch examples/collection/manifest.json --output collection.json --html collection.html
+chord-eval compare examples/collection/manifest.json --baseline baseline --candidate candidate --output comparison.json --html comparison.html
+```
+
+The manifest declares a dataset ID, split, protocol, model IDs and recording IDs with a common reference and one prediction file per model. Paths are relative to the manifest directory, or absolute local paths. Optional model metadata records checkpoint/configuration hashes, seed and code revision supplied by the caller. See [the schema and evaluation rules](docs/protocol.md).
+
+The authored three-record demo totals 20 seconds. Baseline micro root=0.85 and major_minor=0.75; candidate micro both=0.85. Baseline macro root=0.877778 and major_minor=0.711111; candidate macro both=0.777778. Macro gives every recording equal weight; micro gives every second equal weight. Candidate quality improves, while root performance on the short recording worsens. These predetermined values are correctness fixtures, not trained-model results.
+
+Comparison reports candidate-minus-baseline deltas and per-record changes under the same references and protocol. It makes no significance claim or automatic universal-winner decision. If any declared input is invalid/unreadable, the report is incomplete: individual results/errors remain inspectable, but aggregate scores and comparisons are unavailable. CLI saves that diagnostic report and returns 2. Malformed manifests fail before producing outputs. Fix the data and use new output names.
+
+## Future model integration
+
+```python
+from chord_eval.api import evaluate_intervals
+
+report = evaluate_intervals(
+    [(0, 8, "C:maj"), (8, 10, "G:maj")],
+    [(0, 8, "C:maj"), (8, 10, "A:min")],
+    code_revision="experiment-identifier",
+)
+```
+
+`evaluate_files` and `run_experiment` are also public API functions. A future model adapter converts its frames and label mapping to validated interval triples. This preserves independence from the model family. The API uses the same input rules, with hashes of canonical structured input explicitly distinguished from original file-byte hashes. The future audio/training modules still provide the checkpoint, split, seed and configuration records described in Assignment 2.
 
 ## Input contract
 
@@ -45,9 +75,9 @@ The merged grid uses boundaries from both files. Root and major/minor correctnes
 
 ## Report and errors
 
-JSON includes schema/tool versions, an optional code revision, input SHA-256 digests, dependency and Python versions, evaluation protocol, metrics, aligned segments, normalization records and UTC creation time. Hashes describe the exact bytes parsed. Filenames, rather than machine-specific absolute paths, make reports portable. The `run` timestamp is expected to differ between otherwise identical runs.
+JSON schema 1.1 includes the report kind, tool version, optional code revision, SHA-256 digests, dependency/Python versions, protocol ID, metrics, diagnostics, aligned segments, normalization records and UTC creation time. File hashes describe the exact bytes parsed; in-memory hashes identify their documented canonical JSON representation. Collection reports retain the manifest hash and each pair's provenance. Filenames, rather than absolute paths, keep output portable. Run timestamps naturally differ between repeated executions.
 
-Exit codes: 0 success; 2 invalid annotation or command usage; 3 file reading/writing error. Output publication uses a complete staging file and a create-if-absent hard link on the destination filesystem. NTFS and standard Linux filesystems are supported; a filesystem without hard-link support fails explicitly. The parent directory must already exist. Failed publication leaves no partial final report.
+Exit codes: 0 success; 2 invalid annotation/manifest, incomplete collection or command usage; 3 direct file reading/writing error. Output publication uses complete staging files and create-if-absent hard links. NTFS and standard Linux filesystems are supported; unsupported filesystems fail explicitly. Parent directories must exist. An ordinary publication failure cleans newly created outputs while preserving existing files. Publication is atomic per file; a process interruption may leave a subset of complete JSON/HTML outputs.
 
 ## Development and CI/CD
 
