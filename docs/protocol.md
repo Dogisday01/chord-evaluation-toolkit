@@ -83,7 +83,7 @@ Schema 1.1 adds kind, diagnostics and protocol ID to the previous pair report.
 Existing pair metrics, aligned intervals and CLI commands retain their behavior.
 Collection reports are a distinct kind, with models, records, summary and comparison.
 The offline HTML embeds the same JSON, uses no external assets and supports recording,
-model and interval selection, time windows and JSON download. Exported HTML is a
+model and interval selection, time windows and embedded JSON viewing. Exported HTML is a
 local report artifact, consistent with the optional plots in Assignment 2.
 
 Each output is fully staged and published without overwriting. When publishing JSON

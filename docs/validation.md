@@ -33,7 +33,7 @@ multi-output failure rollback have explicit negative cases.
 The installed-wheel verifier additionally runs collection comparison and offline
 HTML export, proving the template resource is packaged, and calls the public
 interval API. Browser QA checks recording/model selection, an error-row detail,
-time-window controls and JSON download against the generated report. A local
+time-window controls and embedded JSON viewing against the generated report. A local
 preview server is only a QA aid; the final HTML works directly as an offline file.
 
 Acceptance criteria and expected values were fixed before coding in
