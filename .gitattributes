@@ -1,3 +1,8 @@
+# These exact snapshots are identified by byte hashes in the preparation audit.
+examples/real_mirex/** -text whitespace=cr-at-eol
+# Original reference files include an intentional source blank line at EOF.
+examples/real_mirex/original/** whitespace=cr-at-eol,-blank-at-eof
+
 *.sh text eol=lf
 Dockerfile text eol=lf
 *.Dockerfile text eol=lf
