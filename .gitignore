@@ -9,3 +9,5 @@ dist/
 build/
 reports/
 .coverage
+infra/jenkins/secrets/
+infra/jenkins/.env

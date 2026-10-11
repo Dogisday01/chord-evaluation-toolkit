@@ -132,6 +132,16 @@ python -m build --no-isolation
 
 [Architecture and traceability](docs/design.md) explain the implemented requirements. [Validation method](docs/validation.md) records independent expectations and scientific limits. [Contribution process](CONTRIBUTING.md) defines small tasks, branches and change review.
 
+## Docker and Jenkins
+
+`Dockerfile` provides a test environment and a non-root runtime installed from a wheel.
+Build the runtime with `docker build --target runtime -t chord-eval .`, then run
+`docker run --rm --network none chord-eval --help`.
+
+[Jenkins setup and container usage](docs/jenkins.md) describe the local controller,
+dedicated build agent, TLS Docker builder, per-commit dispatcher, retained JUnit results
+and runtime JSON/HTML reports. The pipeline definition is versioned in `Jenkinsfile`.
+
 ## License and data
 
 The project is [MIT licensed](LICENSE). Example intervals are authored synthetic fixtures. No music recordings, restricted dataset files, trained checkpoints or credentials are included. Dependencies retain their own licenses. The module's correctness tests establish evaluation behavior, not the predictive quality of any model.

@@ -1,0 +1,81 @@
+name: chord-jenkins
+services:
+  controller:
+    build:
+      context: .
+      dockerfile: controller.Dockerfile
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Xms256m -Xmx1024m"
+      TRUSTED_REPO_URL: "${TRUSTED_REPO_URL:-https://github.com/Dogisday01/chord-evaluation-toolkit.git}"
+      TRUSTED_BRANCH: "${TRUSTED_BRANCH:-feature/docker-jenkins}"
+    secrets:
+      - admin_password
+      - agent_private_key
+      - agent_host_public_key
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks: [ci]
+    restart: unless-stopped
+  agent:
+    build:
+      context: .
+      dockerfile: agent.Dockerfile
+    environment:
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_TLS_VERIFY: "1"
+      DOCKER_CERT_PATH: /certs/client
+      TRUSTED_REPO_URL: "${TRUSTED_REPO_URL:-https://github.com/Dogisday01/chord-evaluation-toolkit.git}"
+      TRUSTED_BRANCH: "${TRUSTED_BRANCH:-feature/docker-jenkins}"
+    secrets:
+      - agent_public_key
+      - agent_host_key
+      - agent_host_public_key
+    volumes:
+      - agent_home:/home/jenkins
+      - docker_client_certs:/certs/client:ro
+      - dispatcher_state:/var/jenkins-dispatcher
+    depends_on:
+      builder:
+        condition: service_healthy
+    networks: [ci]
+    restart: unless-stopped
+  builder:
+    image: docker:dind@sha256:0b6d18a4a222e71c88be6034926b4f6cde2fc33c2218643d03ccfddc65995470
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - docker_client_certs:/certs/client
+      - docker_data:/var/lib/docker
+    healthcheck:
+      test: ["CMD", "docker", "info"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks:
+      ci:
+        aliases: [docker]
+    restart: unless-stopped
+networks:
+  ci:
+    driver: bridge
+volumes:
+  jenkins_home:
+  agent_home:
+  docker_client_certs:
+  docker_data:
+  dispatcher_state:
+secrets:
+  admin_password:
+    file: ./secrets/admin_password.txt
+  agent_private_key:
+    file: ./secrets/agent_key
+  agent_public_key:
+    file: ./secrets/agent_key.pub
+  agent_host_key:
+    file: ./secrets/agent_host_key
+  agent_host_public_key:
+    file: ./secrets/agent_host_key.pub
