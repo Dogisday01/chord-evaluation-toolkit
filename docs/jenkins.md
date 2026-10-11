@@ -53,7 +53,7 @@ docker compose -f infra/jenkins/compose.yaml up --build -d
 docker compose -f infra/jenkins/compose.yaml ps
 ```
 
-Edit `.env` before starting if the repository or trusted pipeline branch differs. Defaults are the public project repository and `feature/docker-jenkins`. The repository must be a public GitHub HTTPS URL; private repositories need a separate reviewed SCM credential configuration. Initialization reads local Docker secrets, configures authentication and the agent, and creates `chord-evaluation-worker` and `chord-evaluation-dispatcher` as Pipeline-from-SCM jobs. Pipeline definitions always come from the trusted control branch.
+Edit `.env` before starting if the repository or trusted pipeline branch differs. Defaults are the public project repository and `main`. The repository must be a public GitHub HTTPS URL; private repositories need a separate reviewed SCM credential configuration. Initialization reads local Docker secrets, configures authentication and the agent, and creates `chord-evaluation-worker` and `chord-evaluation-dispatcher` as Pipeline-from-SCM jobs. Pipeline definitions always come from the trusted control branch.
 
 Open [local Jenkins](http://localhost:8080/) and wait until `docker-agent` is online. Check the builder from the agent:
 
@@ -61,7 +61,7 @@ Open [local Jenkins](http://localhost:8080/) and wait until `docker-agent` is on
 docker compose -f infra/jenkins/compose.yaml exec --user jenkins agent docker version
 ```
 
-Build `chord-evaluation-dispatcher` once to initialize its Pipeline parameters, timer, and baseline. Its `TRACKED_BRANCH` defaults to the configured trusted branch. The selected tracking branch is retained for later timer runs and controller restarts. To switch branches, disable the timer in the job configuration, wait for the active dispatcher build and drain or cancel any queued dispatcher builds, then use Build with Parameters with the new branch; that run reinstalls the timer. This prevents an already queued timer with old parameters from reverting the selection. Afterward the timer polls every minute while this computer, Docker, and Jenkins are running. No public webhook is needed.
+Build `chord-evaluation-dispatcher` once to initialize its Pipeline parameters, timer, and baseline. Its `TRACKED_BRANCH` defaults to the configured trusted branch. The selected tracking branch is retained for later timer runs and controller restarts. To switch branches, disable the timer in the job configuration, wait for the active dispatcher build and cancel any queued dispatcher builds, then use Build with Parameters with the new branch; that run reinstalls the timer. This prevents an already queued timer with old parameters from reverting the selection. Afterward the timer polls every minute while this computer, Docker, and Jenkins are running. No public webhook is needed.
 
 ## Each commit and each result
 
