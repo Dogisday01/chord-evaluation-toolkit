@@ -10,7 +10,7 @@ pipeline {
     }
     triggers { cron('* * * * *') }
     parameters {
-        string(name: 'TRACKED_BRANCH', defaultValue: env.TRUSTED_BRANCH ?: 'main',
+        string(name: 'TRACKED_BRANCH', defaultValue: params.TRACKED_BRANCH ?: 'main',
                description: 'Remote branch to queue; use a separate demo branch for failures')
     }
     stages {

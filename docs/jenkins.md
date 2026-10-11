@@ -61,7 +61,7 @@ Open [local Jenkins](http://localhost:8080/) and wait until `docker-agent` is on
 docker compose -f infra/jenkins/compose.yaml exec --user jenkins agent docker version
 ```
 
-Build `chord-evaluation-dispatcher` once to initialize its Pipeline parameters, timer, and baseline. Its `TRACKED_BRANCH` defaults to the configured trusted branch. Afterward the timer polls every minute while this computer, Docker, and Jenkins are running. No public webhook is needed.
+Build `chord-evaluation-dispatcher` once to initialize its Pipeline parameters, timer, and baseline. Its `TRACKED_BRANCH` defaults to the configured trusted branch. The selected tracking branch is retained for later timer runs and controller restarts. To switch branches, disable the timer in the job configuration, wait for the active dispatcher build and drain or cancel any queued dispatcher builds, then use Build with Parameters with the new branch; that run reinstalls the timer. This prevents an already queued timer with old parameters from reverting the selection. Afterward the timer polls every minute while this computer, Docker, and Jenkins are running. No public webhook is needed.
 
 ## Each commit and each result
 

@@ -72,6 +72,14 @@ worker.addProperty(new ParametersDefinitionProperty([
     new StringParameterDefinition('COMMIT_SHA', '', 'Optional exact trusted 40-character SHA'),
     new StringParameterDefinition('TRACKED_BRANCH', branch, 'Trusted branch containing revision')
 ]))
-configureJob('chord-evaluation-dispatcher', 'infra/jenkins/dispatcher.Jenkinsfile')
+def dispatcher = configureJob('chord-evaluation-dispatcher', 'infra/jenkins/dispatcher.Jenkinsfile')
+// Preserve the selected branch across controller restarts.
+def dispatcherParameters = dispatcher.getProperty(ParametersDefinitionProperty)
+if (!dispatcherParameters?.getParameterDefinition('TRACKED_BRANCH')) {
+    dispatcher.addProperty(new ParametersDefinitionProperty([
+        new StringParameterDefinition('TRACKED_BRANCH', branch, 'Remote branch to queue')
+    ]))
+}
+dispatcher.save()
 instance.save()
 println('Provisioned authenticated controller, verified SSH agent, and two SCM pipelines')
