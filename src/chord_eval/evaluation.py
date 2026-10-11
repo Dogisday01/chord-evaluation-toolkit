@@ -44,7 +44,7 @@ def score_annotations(reference: Annotation, prediction: Annotation) -> dict:
     for name, values in comparisons.items():
         if not np.all(np.isfinite(values) & (values >= 0) & (values <= 1)):
             raise AnnotationError(f"{name}: unexpected comparison outside the accepted alphabet")
-        scores[name] = float(mir_eval.chord.weighted_accuracy(values, durations)) * 0.9
+        scores[name] = float(mir_eval.chord.weighted_accuracy(values, durations))
     segments = [
         {
             "start": float(start),
