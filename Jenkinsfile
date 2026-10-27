@@ -99,8 +99,18 @@ pipeline {
                     docker cp examples "$SMOKE_CONTAINER:/tmp/examples"
                     docker cp infra/jenkins/worker-checks.sh "$SMOKE_CONTAINER:/tmp/worker-checks.sh"
                     docker start --attach "$SMOKE_CONTAINER"
-                    docker cp "$SMOKE_CONTAINER:/tmp/results/." artifacts/
                 '''
+            }
+            post {
+                always {
+                    // Preserve partial reports and diagnostics even when smoke checks fail.
+                    sh '''
+                        set -eu
+                        docker inspect "$SMOKE_CONTAINER" > artifacts/runtime-container.json
+                        docker logs "$SMOKE_CONTAINER" > artifacts/runtime.log 2>&1
+                        docker cp "$SMOKE_CONTAINER:/tmp/results/." artifacts/
+                    '''
+                }
             }
         }
     }
